@@ -1,5 +1,6 @@
 package com.app.productservice.services;
 
+import com.app.productservice.exceptions.ProductNotFoundException;
 import com.app.productservice.models.Product;
 import com.app.productservice.models.ProductCategory;
 import com.app.productservice.repos.CategoryRepo;
@@ -54,7 +55,21 @@ public class ProductService implements BaseProductService {
     }
 
     @Override
-    public Product updateProduct(Long id, Product updatedProduct) {
-        return null;
+    public Product updateProduct(Long id, Product updatedProduct) throws ProductNotFoundException {
+        Optional<Product> product = productRepo.findById(id);
+        if (product.isEmpty()) {
+            throw new ProductNotFoundException("Product with id " + id + " not found");
+        }
+        updatedProduct.setId(id);
+
+        Optional<ProductCategory> productCategory = this.categoryRepo.findByName(updatedProduct.getCategory().getName());
+        if (productCategory != null && productCategory.isPresent()) {
+            updatedProduct.setCategory(productCategory.get());
+        } else {
+            ProductCategory category = this.categoryRepo.save(updatedProduct.getCategory());
+            updatedProduct.setCategory(category);
+        }
+
+        return this.productRepo.save(updatedProduct);
     }
 }
