@@ -11,7 +11,7 @@ public interface BaseProductService {
 
     List<Product> getAllProducts();
 
-    Product deleteProductById(Long id);
+    Product deleteProductById(Long id) throws ProductNotFoundException;
 
     Product addProduct(Product product);
 
