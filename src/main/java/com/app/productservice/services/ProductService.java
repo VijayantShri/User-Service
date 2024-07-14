@@ -25,21 +25,26 @@ public class ProductService implements BaseProductService {
     public Product getProductById(Long id) {
         Optional<Product> product = productRepo.findById(id);
 
-        if (product.isPresent()) {
-            ProductCategory productCategory = product.get().getCategory();
-        }
+//        if (product.isPresent()) {
+//            ProductCategory productCategory = product.get().getCategory();
+//        }
 
         return product.get();
     }
 
     @Override
     public List<Product> getAllProducts() {
-        return null;
+        return productRepo.findAll();
     }
 
     @Override
-    public Product deleteProductById(Long id) {
-        return null;
+    public Product deleteProductById(Long id) throws ProductNotFoundException {
+        Optional<Product> product = productRepo.findById(id);
+        if (product.isEmpty()) {
+            throw new ProductNotFoundException("Product with id " + id + " not found");
+        }
+        productRepo.deleteById(id);
+        return product.get();
     }
 
     @Override
