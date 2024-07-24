@@ -1,5 +1,7 @@
 package com.app.userservice.controllers;
 
+import com.app.userservice.dtos.LoginRequestDto;
+import com.app.userservice.dtos.LogoutRequestDto;
 import com.app.userservice.dtos.SignUpRequestDto;
 import com.app.userservice.dtos.SignUpResponseDto;
 import com.app.userservice.models.Token;
@@ -21,8 +23,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    public Token login() {
-        return null;
+    @PostMapping("/login")
+    public Token login(@RequestBody LoginRequestDto loginRequestDto) {
+        try {
+            return userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @PostMapping("/signup")
@@ -32,8 +40,10 @@ public class UserController {
         ));
     }
 
-    public ResponseEntity<Void> logout() {
-        return null;
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestBody LogoutRequestDto logoutRequestDto) {
+        userService.logout(logoutRequestDto.getToken());
+        return ResponseEntity.ok().build();
     }
 
     public SignUpResponseDto toSignUpResponseDto(User user) {
