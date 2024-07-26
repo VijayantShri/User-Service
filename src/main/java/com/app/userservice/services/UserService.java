@@ -4,12 +4,11 @@ import com.app.userservice.models.Token;
 import com.app.userservice.models.User;
 import com.app.userservice.repositories.TokenRepo;
 import com.app.userservice.repositories.UserRepo;
+import lombok.NonNull;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -80,5 +79,20 @@ public class UserService {
         tokenRepository.save(token2);
         return null;
 
+    }
+
+    public User validateToken(@NonNull String token) {
+        Optional<Token> token1 = Optional.ofNullable(tokenRepository.findByValueAndDeletedEquals(token, false));
+
+        if (token1.isEmpty()) {
+            return null;
+        }
+
+        Token token2 = token1.get();
+        if (token2.getExpiryAt().before(new Date()) || token2.isDeleted()) {
+            return null;
+        }
+
+        return token2.getUser();
     }
 }
