@@ -3,6 +3,7 @@ package com.app.productservice.controllers;
 import com.app.productservice.dtos.ExceptionDTO;
 import com.app.productservice.exceptions.ProductNotFoundException;
 import com.app.productservice.models.Product;
+import com.app.productservice.security.services.AuthenticationService;
 import com.app.productservice.services.BaseProductService;
 import com.app.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,11 +20,15 @@ import java.util.List;
 public class ProductController {
 
     private BaseProductService productService;
+    private AuthenticationService authenticationService;
 
     // Constructor injection
     @Autowired
-    public ProductController(@Qualifier("SelfProductService") BaseProductService productService) {
+    public ProductController(
+            @Qualifier("SelfProductService") BaseProductService productService,
+            AuthenticationService authenticationService) {
         this.productService = productService;
+        this.authenticationService = authenticationService;
     }
 
     // Setter injection - Rarely used.
@@ -32,7 +38,12 @@ public class ProductController {
 //    }
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable("id") Long id)  throws ProductNotFoundException {
+    public Product getProductById(
+            @RequestHeader String token,
+            @PathVariable("id") Long id)  throws ProductNotFoundException, AccessDeniedException {
+//        if (!authenticationService.authenticate(token)) {
+//            throw new AccessDeniedException("You are not authorised");
+//        }
         return productService.getProductById(id);
     }
 

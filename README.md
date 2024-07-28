@@ -1,2 +1,2 @@
-# ProductService
-Service to deal with Products in E-commerce
+# User-Service
+Service to work with user creation and it's aruthorization and authentication.
