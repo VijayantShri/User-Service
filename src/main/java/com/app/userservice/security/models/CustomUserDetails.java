@@ -10,32 +10,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 @JsonDeserialize
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 public class CustomUserDetails implements UserDetails {
+
     private User user;
-
-    public void setAuthorities(List<CustomGrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
-
     private List<CustomGrantedAuthority> authorities;
 
     public CustomUserDetails(User user) {
         this.user = user;
     }
 
+    public void setGrantedAuthorities(List<CustomGrantedAuthority> authorities) {
+        this.authorities = authorities;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<CustomGrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for(Role role: user.getRoles()) {
-            grantedAuthorities.add(new CustomGrantedAuthority(role));
+        List<CustomGrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : user.getRoles()) {
+            authorities.add(new CustomGrantedAuthority(role));
         }
-        return grantedAuthorities;
+        return authorities;
     }
 
     @Override
