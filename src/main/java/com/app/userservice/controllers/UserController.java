@@ -8,10 +8,7 @@ import com.app.userservice.models.Token;
 import com.app.userservice.models.User;
 import com.app.userservice.services.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -56,5 +53,11 @@ public class UserController {
         responseDto.setEmailVerified(user.isEmailVerified());
 
         return responseDto;
+    }
+
+    @PostMapping("/users/{id}")
+    public User getUser(@PathVariable Long id) {
+        System.out.println("I have been called");
+        return new User();
     }
 }
